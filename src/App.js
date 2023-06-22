@@ -7,7 +7,8 @@ function App() {
   const [gridSize, setGridSize] = useState(0);
   const [grid, setGrid] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState('X');
-  // const [wins, setWins] = useState(0);
+  const [winsX, setWinsX] = useState(0);
+  const [winsO, setWinsO] = useState(0);
   const [inputValue, setInputValue] = useState('');
 
   const handleCellClick = (x, y) => {
@@ -27,6 +28,23 @@ function App() {
     setGrid(newGrid);
   };
 
+  // Reset grid
+  const handleResetAllButton = () => {
+    setGridSize(0);
+    setGrid([]);
+    setCurrentPlayer('X');
+    setWinsX(0);
+    setWinsO(0);
+    setInputValue('');
+  };
+
+  const handleResetNewRound = () => {
+    const newGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
+    setGrid(newGrid);
+    setCurrentPlayer('X');
+  };
+
+  // Check for winner
   useEffect(() => {
     const checkWinner = (player) => {
       // Check rows
@@ -40,6 +58,11 @@ function App() {
         }
         if (hasWon) {
           console.log(`Player ${player} wins!`);
+          if(player === 'X'){
+            setWinsX(winsX => winsX + 1);
+          } else {
+            setWinsO(winsO => winsO + 1);
+          }
           return;
         }
       }
@@ -55,6 +78,11 @@ function App() {
         }
         if (hasWon) {
           console.log(`Player ${player} wins!`);
+          if(player === 'X'){
+            setWinsX(winsX => winsX + 1);
+          } else {
+            setWinsO(winsO => winsO + 1);
+          }
           return;
         }
       }
@@ -69,6 +97,11 @@ function App() {
       }
       if (hasWon) {
         console.log(`Player ${player} wins!`);
+        if(player === 'X'){
+          setWinsX(winsX => winsX + 1);
+        } else {
+          setWinsO(winsO => winsO + 1);
+        }
         return;
       }
 
@@ -80,15 +113,39 @@ function App() {
         }
       }
       if (hasWon) {
-        
         console.log(`Player ${player} wins!`);
+        if(player === 'X'){
+          setWinsX(winsX => winsX + 1);
+        } else {
+          setWinsO(winsO => winsO + 1);
+        }
         return;
       }
     };
 
+    if(gridSize === 0) return;
     checkWinner('X');
     checkWinner('O');
   }, [grid]);
+
+  // Check for wins
+  useEffect(() => {
+    // to start a new round
+    if(winsX !== 3 && winsO !== 3)
+    {
+      handleResetNewRound();
+      return;
+    }
+    // when one player wins 3 times
+    if(winsX === 3 ) 
+      {
+        alert(`Player X wins!`);
+      }
+    if(winsO === 3 )
+      {
+        alert(`Player O wins!`);
+      }
+  }, [winsX, winsO]);
 
   return (
     <div className="App">
@@ -115,6 +172,10 @@ function App() {
       <div>Current player: {currentPlayer}</div>
       <div>Grid size: {gridSize}</div>
       <div>Grid: {JSON.stringify(grid)}</div>
+      <div>Wins X: {winsX}</div>
+      <div>Wins O: {winsO}</div>
+
+      <button onClick={handleResetAllButton}>Reset</button>
     </div>
   );
 }
