@@ -9,6 +9,7 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [winsX, setWinsX] = useState(0);
   const [winsO, setWinsO] = useState(0);
+  const [isDraw, setIsDraw] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
   const handleCellClick = (x, y) => {
@@ -37,6 +38,7 @@ function App() {
     setCurrentPlayer("X");
     setWinsX(0);
     setWinsO(0);
+    setIsDraw(false);
     setInputValue("");
   };
 
@@ -45,6 +47,7 @@ function App() {
       .fill(null)
       .map(() => Array(gridSize).fill(null));
     setGrid(newGrid);
+    setIsDraw(false);
     setCurrentPlayer("X");
   };
 
@@ -53,16 +56,22 @@ function App() {
       if (gridSize === 0) {
         return;
       }
-      let x, y;
-      do {
-        x = Math.floor(Math.random() * gridSize);
-        y = Math.floor(Math.random() * gridSize);
-      } while (grid[y][x] !== null);
-
-      const newGrid = [...grid];
-      newGrid[y][x] = currentPlayer;
-      setGrid(newGrid);
-      setCurrentPlayer("X");
+    let foundFreeCell = false;
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        if (grid[y][x] === null) {
+          const newGrid = [...grid];
+          newGrid[y][x] = currentPlayer;
+          setGrid(newGrid);
+          setCurrentPlayer("X");
+          foundFreeCell = true;
+          break;
+        }
+      }
+      if (foundFreeCell) {
+        break;
+      }
+    }
     }
   };
 
@@ -82,6 +91,7 @@ function App() {
           setWinsX((winsX) => winsX + 1);
         } else {
           setWinsO((winsO) => winsO + 1);
+          console.log("incremented winsO", winsO);
         }
         return;
       }
@@ -146,11 +156,17 @@ function App() {
   // Check for winner
   useEffect(() => {
     if (gridSize === 0) return;
-    checkWinner(currentPlayer);
 
-    if (currentPlayer === "O") {
+    if (currentPlayer === "O" && winsX !== 3 && winsO !== 3) {
       makeComputerMove();
     }
+      checkWinner(currentPlayer);
+      if (!isDraw && grid.every((row) => row.every((cell) => cell !== null))) {
+        setIsDraw(true);
+        handleResetNewRound();
+      } 
+  
+    
   }, [grid]);
 
   // Check for wins
@@ -160,6 +176,11 @@ function App() {
       handleResetNewRound();
       return;
     }
+
+    // when its a draw
+    if (isDraw) {
+      alert('its a draw !');
+    }
     // when one player wins 3 times
     if (winsX === 3) {
       alert(`Player X wins!`);
@@ -168,7 +189,7 @@ function App() {
       alert(`Player O wins!`);
     }
     handleResetAll();
-  }, [winsX, winsO]);
+  }, [winsX, winsO, isDraw]);
 
   return (
     <div className="App">
@@ -203,7 +224,7 @@ function App() {
       <div className="info">
         <div>Current player: {currentPlayer}</div>
         <div>Grid size: {gridSize}</div>
-        {/* <div>Grid: {JSON.stringify(grid)}</div> */}
+        <div>Grid: {JSON.stringify(grid)}</div>
         <div>Wins X: {winsX}</div>
         <div>Wins O: {winsO}</div>
       </div>
