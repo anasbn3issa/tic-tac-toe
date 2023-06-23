@@ -49,8 +49,8 @@ function App() {
   };
 
   const makeComputerMove = () => {
-    if (currentPlayer === 'O') {
-      if(gridSize === 0 ) {
+    if (currentPlayer === "O") {
+      if (gridSize === 0) {
         return;
       }
       let x, y;
@@ -62,99 +62,95 @@ function App() {
       const newGrid = [...grid];
       newGrid[y][x] = currentPlayer;
       setGrid(newGrid);
-      setCurrentPlayer('X');
+      setCurrentPlayer("X");
     }
   };
 
+  const checkWinner = (player) => {
+    // Check rows
+    for (let i = 0; i < gridSize; i++) {
+      let hasWon = true;
+      for (let j = 0; j < gridSize; j++) {
+        if (grid[i][j] !== player) {
+          hasWon = false;
+          break;
+        }
+      }
+      if (hasWon) {
+        console.log(`Player ${player} wins!`);
+        if (player === "X") {
+          setWinsX((winsX) => winsX + 1);
+        } else {
+          setWinsO((winsO) => winsO + 1);
+        }
+        return;
+      }
+    }
+
+    // Check columns
+    for (let i = 0; i < gridSize; i++) {
+      let hasWon = true;
+      for (let j = 0; j < gridSize; j++) {
+        if (grid[j][i] !== player) {
+          hasWon = false;
+          break;
+        }
+      }
+      if (hasWon) {
+        console.log(`Player ${player} wins!`);
+        if (player === "X") {
+          setWinsX((winsX) => winsX + 1);
+        } else {
+          setWinsO((winsO) => winsO + 1);
+        }
+        return;
+      }
+    }
+
+    // Check diagonals
+    let hasWon = true;
+    for (let i = 0; i < gridSize; i++) {
+      if (grid[i][i] !== player) {
+        hasWon = false;
+        break;
+      }
+    }
+    if (hasWon) {
+      console.log(`Player ${player} wins!`);
+      if (player === "X") {
+        setWinsX((winsX) => winsX + 1);
+      } else {
+        setWinsO((winsO) => winsO + 1);
+      }
+      return;
+    }
+
+    hasWon = true;
+    for (let i = 0; i < gridSize; i++) {
+      if (grid[i][gridSize - 1 - i] !== player) {
+        hasWon = false;
+        break;
+      }
+    }
+    if (hasWon) {
+      console.log(`Player ${player} wins!`);
+      if (player === "X") {
+        setWinsX((winsX) => winsX + 1);
+      } else {
+        setWinsO((winsO) => winsO + 1);
+      }
+      return;
+    }
+  };
 
   // Check for winner
   useEffect(() => {
-    const checkWinner = (player) => {
-      // Check rows
-      for (let i = 0; i < gridSize; i++) {
-        let hasWon = true;
-        for (let j = 0; j < gridSize; j++) {
-          if (grid[i][j] !== player) {
-            hasWon = false;
-            break;
-          }
-        }
-        if (hasWon) {
-          console.log(`Player ${player} wins!`);
-          if (player === "X") {
-            setWinsX((winsX) => winsX + 1);
-          } else {
-            setWinsO((winsO) => winsO + 1);
-          }
-          return;
-        }
-      }
-
-      // Check columns
-      for (let i = 0; i < gridSize; i++) {
-        let hasWon = true;
-        for (let j = 0; j < gridSize; j++) {
-          if (grid[j][i] !== player) {
-            hasWon = false;
-            break;
-          }
-        }
-        if (hasWon) {
-          console.log(`Player ${player} wins!`);
-          if (player === "X") {
-            setWinsX((winsX) => winsX + 1);
-          } else {
-            setWinsO((winsO) => winsO + 1);
-          }
-          return;
-        }
-      }
-
-      // Check diagonals
-      let hasWon = true;
-      for (let i = 0; i < gridSize; i++) {
-        if (grid[i][i] !== player) {
-          hasWon = false;
-          break;
-        }
-      }
-      if (hasWon) {
-        console.log(`Player ${player} wins!`);
-        if (player === "X") {
-          setWinsX((winsX) => winsX + 1);
-        } else {
-          setWinsO((winsO) => winsO + 1);
-        }
-        return;
-      }
-
-      hasWon = true;
-      for (let i = 0; i < gridSize; i++) {
-        if (grid[i][gridSize - 1 - i] !== player) {
-          hasWon = false;
-          break;
-        }
-      }
-      if (hasWon) {
-        console.log(`Player ${player} wins!`);
-        if (player === "X") {
-          setWinsX((winsX) => winsX + 1);
-        } else {
-          setWinsO((winsO) => winsO + 1);
-        }
-        return;
-      }
-    };
-
     if (gridSize === 0) return;
-    checkWinner("X");
-    checkWinner("O");
+    checkWinner(currentPlayer);
 
-    if(currentPlayer=== 'O') {
+    if (currentPlayer === "O") {
       makeComputerMove();
     }
-
-
   }, [grid]);
 
   // Check for wins
