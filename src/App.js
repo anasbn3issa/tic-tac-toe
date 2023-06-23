@@ -204,15 +204,15 @@ function App() {
           )}
         </Board>
       )}
-      <div>
+      <div className="info">
         <div>Current player: {currentPlayer}</div>
         <div>Grid size: {gridSize}</div>
-        <div>Grid: {JSON.stringify(grid)}</div>
+        {/* <div>Grid: {JSON.stringify(grid)}</div> */}
         <div>Wins X: {winsX}</div>
         <div>Wins O: {winsO}</div>
       </div>
 
-      <button onClick={handleResetAll}>Reset</button>
+      <button onClick={handleResetAll}>Reset All</button>
     </div>
   );
 }
