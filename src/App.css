@@ -2,6 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: pink 3px solid;
+  height: fit-content;
+  flex-direction: column;
 }
 
 .input-size {
@@ -11,4 +14,8 @@
 
 .tictactoe {
   border: #282c34 1px solid;
+}
+
+.info {
+  border: pink 1.5px solid;
 }
