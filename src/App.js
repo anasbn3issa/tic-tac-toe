@@ -48,6 +48,25 @@ function App() {
     setCurrentPlayer("X");
   };
 
+  const makeComputerMove = () => {
+    if (currentPlayer === 'O') {
+      if(gridSize === 0 ) {
+        return;
+      }
+      let x, y;
+      do {
+        x = Math.floor(Math.random() * gridSize);
+        y = Math.floor(Math.random() * gridSize);
+      } while (grid[y][x] !== null);
+
+      const newGrid = [...grid];
+      newGrid[y][x] = currentPlayer;
+      setGrid(newGrid);
+      setCurrentPlayer('X');
+    }
+  };
+
+
   // Check for winner
   useEffect(() => {
     const checkWinner = (player) => {
@@ -130,6 +149,12 @@ function App() {
     if (gridSize === 0) return;
     checkWinner("X");
     checkWinner("O");
+
+    if(currentPlayer=== 'O') {
+      makeComputerMove();
+    }
+
+
   }, [grid]);
 
   // Check for wins
